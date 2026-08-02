@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Emit .next/standalone so the Docker image ships only the server plus the
+  // node_modules it actually imports (needed by the Dockerfile / Coolify).
+  output: "standalone",
   // React Compiler is disabled: with it on, Suspense-wrapped pages could get
   // stuck on their fallback/loading state (Next 16.1.2 + React 19). Leave off
   // until that interaction is resolved upstream.
@@ -30,8 +33,12 @@ const nextConfig: NextConfig = {
         hostname: "localhost",
         port: "5000",
       },
-      // 👉 On your VPS, add your backend domain here too, e.g.:
-      // { protocol: "https", hostname: "api.yourdomain.com" },
+      // Production backend on the VPS — disk-storage uploads are served from
+      // https://api.healixbd.com/uploads/...
+      {
+        protocol: "https",
+        hostname: "api.healixbd.com",
+      },
     ],
   },
 };
