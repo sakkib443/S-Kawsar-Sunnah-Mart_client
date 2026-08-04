@@ -80,6 +80,13 @@ const authSlice = createSlice({
             state.isRestoring = false;
         },
 
+        /** Replace the access token after a silent refresh (keeps the user signed in). */
+        setToken: (state, action: PayloadAction<string>) => {
+            state.token = action.payload;
+            state.isAuthenticated = true;
+            state.isRestoring = false;
+        },
+
         updateUser: (state, action: PayloadAction<Partial<User>>) => {
             if (state.user) {
                 state.user = { ...state.user, ...action.payload };
@@ -104,6 +111,7 @@ export const {
     loginFailure,
     logout,
     sessionRestoreFinished,
+    setToken,
     updateUser,
     updateAddress,
     clearError

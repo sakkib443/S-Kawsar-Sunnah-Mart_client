@@ -56,6 +56,7 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
     const handleLogout = () => {
         dispatch(logout());
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         router.push('/');
     };
 

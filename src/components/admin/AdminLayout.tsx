@@ -107,7 +107,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         });
     }, [pathname]);
 
-    const handleLogout = () => { localStorage.removeItem('token'); router.push('/'); };
+    const handleLogout = () => { localStorage.removeItem('token'); localStorage.removeItem('refreshToken'); router.push('/'); };
 
     const isActive = (href: string) => pathname === href;
     const isParentActive = (item: typeof allMenuItems[0]) =>

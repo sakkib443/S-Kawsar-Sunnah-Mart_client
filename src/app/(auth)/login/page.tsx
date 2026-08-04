@@ -41,6 +41,7 @@ const LoginPageInner = () => {
             const res = await login(credentials).unwrap();
             const apiUser = res.data.user;
             const token = res.data.tokens.accessToken;
+            const refreshToken = res.data.tokens.refreshToken;
             const user = {
                 id: apiUser._id || apiUser.id,
                 name: apiUser.name || `${apiUser.firstName || ''} ${apiUser.lastName || ''}`.trim() || apiUser.email,
@@ -52,6 +53,7 @@ const LoginPageInner = () => {
 
             dispatch(loginSuccess({ user, token }));
             localStorage.setItem('token', token);
+            if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
             toast.success('Welcome back! Login successful.', {
                 style: { borderRadius: '10px', background: 'var(--color-primary)', color: '#fff' },
                 icon: '✅',

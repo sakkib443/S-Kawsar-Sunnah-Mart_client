@@ -19,6 +19,7 @@ export default function SettingsPage() {
     const handleLogout = () => {
         dispatch(logout());
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         router.push('/');
     };
 

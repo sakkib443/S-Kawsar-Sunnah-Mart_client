@@ -65,6 +65,7 @@ const RegisterPageInner = () => {
 
             dispatch(loginSuccess({ user, token }));
             localStorage.setItem('token', token);
+            if (res.data.tokens.refreshToken) localStorage.setItem('refreshToken', res.data.tokens.refreshToken);
             toast.success('Account created! Please verify your email 🎉', {
                 duration: 4000,
                 style: { borderRadius: '10px', background: 'var(--color-primary)', color: '#fff' },

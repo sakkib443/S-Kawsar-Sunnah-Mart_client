@@ -31,7 +31,10 @@ const FloatingContact: React.FC = () => {
     const payment = res?.data?.payment || {};
 
     const showWhatsapp = f?.showWhatsapp !== false; // default true
-    const digits = (f?.whatsapp || contact.whatsapp || '').replace(/\D/g, '');
+    // Contact WhatsApp is the single source of truth (matches the footer + contact
+    // page); the floating section's own number is only a fallback. This way editing
+    // the Contact "WhatsApp Number" updates the floating button too.
+    const digits = (contact.whatsapp || f?.whatsapp || '').replace(/\D/g, '');
     const whatsappNumber = digits.startsWith('880') ? digits : digits.startsWith('0') ? '88' + digits : digits ? '880' + digits : '';
     const whatsappLink = whatsappNumber ? `https://wa.me/${whatsappNumber}` : '';
 

@@ -75,6 +75,7 @@ const Header: React.FC = () => {
     const handleLogout = () => {
         dispatch(logout());
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         setIsProfileOpen(false);
         router.push('/');
     };

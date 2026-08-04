@@ -29,10 +29,35 @@ const restoreSession = async () => {
     }
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+    // Try /auth/me with the current access token; if it's expired (401), silently
+    // refresh once using the stored refresh token and retry — so a reload after the
+    // 24h access token expires keeps the admin signed in instead of bouncing to login.
+    const fetchMe = (t: string) => fetch(`${apiUrl}/auth/me`, { headers: { Authorization: `Bearer ${t}` } });
+
     try {
-        const res = await fetch(`${apiUrl}/auth/me`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+        let activeToken = token;
+        let res = await fetchMe(activeToken);
+
+        if (res.status === 401) {
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            if (refreshToken) {
+                const rf = await fetch(`${apiUrl}/auth/refresh-token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ refreshToken }),
+                });
+                if (rf.ok) {
+                    const newToken = (await rf.json())?.data?.accessToken;
+                    if (newToken) {
+                        activeToken = newToken;
+                        window.localStorage.setItem('token', newToken);
+                        res = await fetchMe(activeToken);
+                    }
+                }
+            }
+        }
         if (!res.ok) throw new Error('session expired');
 
         const json = await res.json();
@@ -48,12 +73,13 @@ const restoreSession = async () => {
                 role: u.role || 'user',
                 avatar: u.avatar || '',
             },
-            token,
+            token: activeToken,
         }));
     } catch {
-        // Expired / revoked / unreachable — drop the dead token so the user gets
+        // Expired / revoked / unreachable — drop the dead tokens so the user gets
         // a clean login rather than a half-signed-in state.
         window.localStorage.removeItem('token');
+        window.localStorage.removeItem('refreshToken');
         store.dispatch(logout());
     }
 };

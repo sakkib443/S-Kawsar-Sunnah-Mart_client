@@ -7,7 +7,7 @@ import { useUpdateProfileMutation, useGetMyAddressesQuery } from '@/redux/api/us
 import { useUploadMyImagesMutation } from '@/redux/api/uploadApi';
 import {
     LuUser, LuSave, LuCamera, LuMail, LuPhone, LuLock, LuMapPin,
-    LuSquarePen, LuX, LuShield, LuCircleCheck,
+    LuSquarePen, LuX, LuShield, LuCircleCheck, LuEye, LuEyeOff,
 } from 'react-icons/lu';
 import { FcGoogle } from 'react-icons/fc';
 import { toast } from 'react-hot-toast';
@@ -32,6 +32,8 @@ export default function ProfilePage() {
     const [form, setForm] = useState({ name: '', phone: '' });
 
     const [showPw, setShowPw] = useState(false);
+    const [showNewPw, setShowNewPw] = useState(false);
+    const [showConfirmPw, setShowConfirmPw] = useState(false);
     const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
     const [isChangingPw, setIsChangingPw] = useState(false);
 
@@ -255,15 +257,26 @@ export default function ProfilePage() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className={labelCls}>Current</label>
+                                    {/* Writable, but intentionally NO reveal icon */}
                                     <input type="password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })} className={inputCls} placeholder="••••••••" />
                                 </div>
                                 <div>
                                     <label className={labelCls}>New</label>
-                                    <input type="password" value={passwordForm.newPassword} onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })} className={inputCls} placeholder="••••••••" />
+                                    <div className="relative">
+                                        <input type={showNewPw ? 'text' : 'password'} value={passwordForm.newPassword} onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })} className={`${inputCls} pr-10`} placeholder="••••••••" />
+                                        <button type="button" onClick={() => setShowNewPw((v) => !v)} aria-label={showNewPw ? 'Hide password' : 'Show password'} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                            {showNewPw ? <LuEyeOff size={16} /> : <LuEye size={16} />}
+                                        </button>
+                                    </div>
                                 </div>
                                 <div>
                                     <label className={labelCls}>Confirm</label>
-                                    <input type="password" value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })} className={inputCls} placeholder="••••••••" />
+                                    <div className="relative">
+                                        <input type={showConfirmPw ? 'text' : 'password'} value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })} className={`${inputCls} pr-10`} placeholder="••••••••" />
+                                        <button type="button" onClick={() => setShowConfirmPw((v) => !v)} aria-label={showConfirmPw ? 'Hide password' : 'Show password'} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                            {showConfirmPw ? <LuEyeOff size={16} /> : <LuEye size={16} />}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex justify-end mt-4">

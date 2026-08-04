@@ -102,7 +102,7 @@ export const orderApi = baseApi.injectEndpoints({
         }),
 
         // ===== Public tracking endpoint (no auth) =====
-        // Public: track order by human orderId (e.g. ABM-0001) or Mongo _id — Backend route: GET /api/orders/track/:orderId
+        // Public: track order by human orderId (e.g. SKS-0001) or Mongo _id — Backend route: GET /api/orders/track/:orderId
         trackOrder: builder.query({
             query: (orderId) => ({
                 url: `/orders/track/${orderId}`,

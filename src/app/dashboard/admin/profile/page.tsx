@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
     LuUser, LuLock, LuSave, LuMail, LuPhone, LuCamera, LuSquarePen, LuX,
-    LuShield, LuCircleCheck,
+    LuShield, LuCircleCheck, LuEye, LuEyeOff,
 } from 'react-icons/lu';
 import { FcGoogle } from 'react-icons/fc';
 import { useGetMeQuery, useUpdateProfileMutation } from '@/redux/api/userApi';
@@ -25,6 +25,8 @@ export default function AdminProfilePage() {
     const [profile, setProfile] = useState({ firstName: '', lastName: '', phone: '' });
 
     const [showPw, setShowPw] = useState(false);
+    const [showNewPw, setShowNewPw] = useState(false);
+    const [showConfirmPw, setShowConfirmPw] = useState(false);
     const [pw, setPw] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
 
     useEffect(() => {
@@ -232,15 +234,26 @@ export default function AdminProfilePage() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className={labelCls}>Current</label>
+                                    {/* Writable, but intentionally NO reveal icon */}
                                     <input type="password" value={pw.currentPassword} onChange={(e) => setPw({ ...pw, currentPassword: e.target.value })} className={inputCls} placeholder="••••••••" />
                                 </div>
                                 <div>
                                     <label className={labelCls}>New</label>
-                                    <input type="password" value={pw.newPassword} onChange={(e) => setPw({ ...pw, newPassword: e.target.value })} className={inputCls} placeholder="••••••••" />
+                                    <div className="relative">
+                                        <input type={showNewPw ? 'text' : 'password'} value={pw.newPassword} onChange={(e) => setPw({ ...pw, newPassword: e.target.value })} className={`${inputCls} pr-10`} placeholder="••••••••" />
+                                        <button type="button" onClick={() => setShowNewPw((v) => !v)} aria-label={showNewPw ? 'Hide password' : 'Show password'} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                            {showNewPw ? <LuEyeOff size={16} /> : <LuEye size={16} />}
+                                        </button>
+                                    </div>
                                 </div>
                                 <div>
                                     <label className={labelCls}>Confirm</label>
-                                    <input type="password" value={pw.confirmPassword} onChange={(e) => setPw({ ...pw, confirmPassword: e.target.value })} className={inputCls} placeholder="••••••••" />
+                                    <div className="relative">
+                                        <input type={showConfirmPw ? 'text' : 'password'} value={pw.confirmPassword} onChange={(e) => setPw({ ...pw, confirmPassword: e.target.value })} className={`${inputCls} pr-10`} placeholder="••••••••" />
+                                        <button type="button" onClick={() => setShowConfirmPw((v) => !v)} aria-label={showConfirmPw ? 'Hide password' : 'Show password'} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                            {showConfirmPw ? <LuEyeOff size={16} /> : <LuEye size={16} />}
+                                        </button>
+                                    </div>
                                     {pw.confirmPassword && pw.newPassword !== pw.confirmPassword && (
                                         <p className="text-[11px] text-red-500 mt-1 font-semibold">⚠ Passwords do not match</p>
                                     )}
